@@ -34,7 +34,7 @@ class kg_robot():
             print("Connected to UR5\r\n")
             self.open=True
 
-            self.homej = wp.burt_homej
+            self.homej = wp.robot_homej
             #self.home(pose = wp.burt_homej, wait=False)
 
 
