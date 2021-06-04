@@ -32,7 +32,8 @@ SALT = salt_sensor(no_samples=50)
 ### Choose Experiment
 
 #Experiment = "First Tests"
-Experiment = "First Attempts on Mixing"
+#Experiment = "First Attempts on Mixing"
+Experiment = "Initial Egg Data"
 
 
 
@@ -42,7 +43,8 @@ if Experiment == "First Tests":
 if Experiment == "First Attempts on Mixing":
     EXP.first_actual_mixing(robot=robot, SALT=SALT)
 
-
+if Experiment == "Initial Egg Data":
+    EXP.first_egg_mixing(robot=robot, SALT=SALT)
 
 
 

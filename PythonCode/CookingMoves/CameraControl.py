@@ -9,12 +9,12 @@ def returnPanPicture(robot):
     # rotate wrist - spatula up, sensor down
     robot.movej_rel([0, 0, 0, 0, 3.14, 0])
     # go down
-    robot.movel_tool([0, 0, -0.3, 0, 0, 0], acc=0.2)
+    robot.movel_tool([0.1, 0.0, -0.38, 0, 0, 0], acc=0.2)
 
     bool, img = return_picture()
 
     #reversing the moves
-    robot.movel_tool([0, 0, 0.3, 0, 0, 0], acc=0.2)
+    robot.movel_tool([0, 0, 0.38, 0, 0, 0], acc=0.2)
     robot.movej_rel([0, 0, 0, 0, -3.14, 0])
     GenericMoves.move_to_mixing_home(robot)
     return img
@@ -37,8 +37,8 @@ def camera_test():
     s, img = cam.read()
     if s:    # frame captured without any errors
         cv.namedWindow("cam-test")
-        cv.imshow("cam-test",img)
+        cv.imshow("cam-test", img)
         cv.waitKey(0)
         cv.destroyWindow("cam-test")
-        cv.imwrite("filename.jpg",img)
+        cv.imwrite("filename.jpg", img)
 
