@@ -33,7 +33,11 @@ SALT = salt_sensor(no_samples=50)
 
 #Experiment = "First Tests"
 #Experiment = "First Attempts on Mixing"
-Experiment = "Initial Egg Data"
+#Experiment = "Initial Egg Data"
+#Experiment = "Eggs with Shakeoff"
+#Experiment = "Eggs with Brush"
+#Experiment = "Eggs with Brush Room Temp"
+Experiment = "Brush New Pan"
 
 
 
@@ -46,7 +50,17 @@ if Experiment == "First Attempts on Mixing":
 if Experiment == "Initial Egg Data":
     EXP.first_egg_mixing(robot=robot, SALT=SALT)
 
+if Experiment == "Eggs with Shakeoff":
+    EXP.eggs_with_shakeoff(robot=robot, SALT=SALT)
 
+if Experiment == "Eggs with Brush":
+    EXP.eggs_with_brush(robot=robot, SALT=SALT)
+
+if Experiment == "Eggs with Brush Room Temp":
+    EXP.eggs_with_brush_room_temp(robot=robot, SALT=SALT)
+
+if Experiment == "Brush New Pan":
+    EXP.brush_new_pan(robot=robot, SALT=SALT)
 
 
 
