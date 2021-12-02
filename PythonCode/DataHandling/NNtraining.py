@@ -31,17 +31,21 @@ class NeuralNet:
         self.x_test = []
         self.y_test = []
 
-    def train_model(self, salinity_arr, img_arr, model_name):
-        self.read_in_data(salinity_arr, img_arr)
+    def train_model(self, salinity_arr, img_arr, model_name, to_learn):
+        self.read_in_data(salinity_arr, img_arr, to_learn)
         self.data_prep("Naive")
         input_shape = self.reshape_and_input_size(if_gray="False")
-        model = self.compile_model(input_shape=input_shape, if_print_model_summary=False)
+        model = self.compile_model(model_name=model_name, input_shape=input_shape, if_print_model_summary=False)
         self.fit_the_model(model=model, model_name=model_name, if_image_aug=False)
 
-    def read_in_data(self, data_arr, img_arr):
+    def read_in_data(self, data_arr, img_arr, to_learn):
         self.data_x = np.array(img_arr)
         for n in range(len(data_arr)):
-            self.data_y.append(stats.variance(data_arr[n]))
+            if to_learn == "Varience":
+                self.data_y.append(stats.variance(data_arr[n]))
+            else:
+                self.data_y.append(stats.mean(data_arr[n]))
+
         #print(self.data_x)
         #print(self.data_y)
 
@@ -85,20 +89,39 @@ class NeuralNet:
                 self.x_test = self.x_test.reshape(self.x_test.shape[0], self.img_rows, self.img_cols, 1)
                 return (self.img_rows, self.img_cols, 1)
 
-    def compile_model(self, input_shape, if_print_model_summary):
-        model = VGG16(include_top=False, weights='imagenet', input_shape=input_shape, pooling="max")
-        for layer in model.layers:
-            layer.trainable = False
-        dropout1 = Dropout(0.2)(model.layers[-1].output)
-        class1 = Dense(600, activation='sigmoid')(dropout1)
-        dropout2 = Dropout(0.2)(class1)
-        class2 = Dense(300, activation='sigmoid')(dropout2)
-        dropout3 = Dropout(0.2)(class2)
-        class3 = Dense(600, activation='sigmoid')(dropout3)
-        output = Dense(1, activation='linear')(class3)
-        model = Model(inputs=model.inputs, outputs=output)
-        model.compile(loss=tensorflow.keras.losses.mean_squared_error, optimizer=tensorflow.keras.optimizers.Adadelta(),
-                      metrics=tensorflow.keras.metrics.MeanAbsolutePercentageError())
+    def compile_model(self, model_name, input_shape, if_print_model_summary):
+        if model_name == "SuperNaiveFirstTest":
+            model = VGG16(include_top=False, weights='imagenet', input_shape=input_shape, pooling="max")
+            for layer in model.layers:
+                layer.trainable = False
+            dropout1 = Dropout(0.2)(model.layers[-1].output)
+            class1 = Dense(600, activation='sigmoid')(dropout1)
+            dropout2 = Dropout(0.2)(class1)
+            class2 = Dense(300, activation='sigmoid')(dropout2)
+            dropout3 = Dropout(0.2)(class2)
+            class3 = Dense(600, activation='sigmoid')(dropout3)
+            output = Dense(1, activation='linear')(class3)
+            model = Model(inputs=model.inputs, outputs=output)
+            model.compile(loss=tensorflow.keras.losses.mean_squared_error, optimizer=tensorflow.keras.optimizers.Adadelta(),
+                          metrics=tensorflow.keras.metrics.MeanAbsolutePercentageError())
+
+        if model_name == "SuperNaiveFirstTest2" or model_name == "SuperNaiveFirstTest2_Mean":
+            model = VGG16(include_top=False, weights='imagenet', input_shape=input_shape, pooling="max")
+            for layer in model.layers:
+                layer.trainable = False
+            dropout1 = Dropout(0.2)(model.layers[-1].output)
+            class1 = Dense(800, activation='sigmoid')(dropout1)
+            dropout2 = Dropout(0.2)(class1)
+            class2 = Dense(800, activation='linear')(dropout2)
+            dropout3 = Dropout(0.2)(class2)
+            class3 = Dense(800, activation='sigmoid')(dropout3)
+            output = Dense(1, activation='linear')(class3)
+            model = Model(inputs=model.inputs, outputs=output)
+            model.compile(loss=tensorflow.keras.losses.mean_squared_error, optimizer=tensorflow.keras.optimizers.Adadelta(),
+                          metrics=tensorflow.keras.metrics.MeanAbsolutePercentageError())
+
+
+
         if if_print_model_summary == True:
             model.summary()
             for layer in model.layers:

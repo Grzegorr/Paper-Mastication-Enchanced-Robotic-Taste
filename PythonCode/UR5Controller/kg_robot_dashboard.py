@@ -35,7 +35,8 @@ class kg_robot_dashboard():
             time.sleep(0.5)
         print(self.socket_send("close popup\n"))
         print(self.socket_send("play\n"))
-        # print(self.socket_send("quit\n"))
+        #print(self.socket_send("quit\n"))
+        print("play\n")
         self.c.close()
         self.open = False
 

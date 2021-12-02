@@ -23,7 +23,7 @@ def returnPanPicture(robot):
 #First return is success indicator 0/1
 #2nd output is the frame itself
 def return_picture():
-    cam = cv.VideoCapture(0)  # 0 -> index of camera
+    cam = cv.VideoCapture(1)  # 0 -> index of camera
     s, img = cam.read()
     if s:  # frame captured without any errors
         return 1, img

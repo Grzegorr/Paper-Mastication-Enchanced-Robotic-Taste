@@ -6,6 +6,143 @@ import numpy as np
 import cv2 as cv
 import matplotlib.pyplot as plt
 
+from skimage.filters.rank import entropy
+from skimage.morphology import disk
+import skimage
+
+
+def print_mean_and_variance(data):
+    print(data)
+    print(stats.mean(data))
+    print(stats.variance(data))
+
+def show_image(img):
+    cv.imshow("Image", img)
+    cv.waitKey(0)
+
+def colour_img_entropy_map(img):
+    img_gray = cv.cvtColor(img, cv.COLOR_RGB2GRAY)
+    cv.imshow("Image", img_gray)
+    cv.waitKey(0)
+    entr_img = entropy(img_gray, disk(100))
+    entr_img = 10*entr_img
+    entr_img = entr_img.astype(np.uint8)
+    print(img_gray)
+    cv.imshow("Image", entr_img)
+    cv.waitKey(0)
+    return entr_img
+
+def colour_img_entropy(img):
+    img_gray = cv.cvtColor(img, cv.COLOR_RGB2GRAY)
+    cv.imshow("Image", img_gray)
+    cv.waitKey(0)
+    entropy = skimage.measure.shannon_entropy(img_gray)
+    #print(img_gray)
+    return entropy
+
+def colour_img_canny(img):
+    img_gray = cv.cvtColor(img, cv.COLOR_RGB2GRAY)
+    #cv.imshow("Image", img_gray)
+    #cv.waitKey(0)
+    img_canny = cv.Canny(img_gray,30,200)
+
+    return img_canny
+
+def colour_img_fft(img):
+    img_gray = cv.cvtColor(img, cv.COLOR_RGB2GRAY)
+    fft = np.fft.fft2(img_gray)
+    fft = np.fft.fftshift(fft)
+    #print(fft.shape[0])
+    FFT = np.zeros((fft.shape[0], fft.shape[1]))
+    FFT[:,:] = abs(fft[:,:])
+    #print(np.amax(FFT))
+    scaling = np.average(FFT)
+    FFT = FFT * 0.4 / scaling
+    #print(FFT)
+    cv.imshow("Image", FFT)
+    cv.waitKey(0)
+
+def colour_img_fft_10(img_arr):
+    # Figure Params
+    fig = plt.figure(figsize=(80, 80))
+    columns = 10
+    rows = 2
+
+    for i in range(10):
+        img_gray = cv.cvtColor(img_arr[i], cv.COLOR_RGB2GRAY)
+        fft = np.fft.fft2(img_gray)
+        fft = np.fft.fftshift(fft)
+        #print(fft.shape[0])
+        FFT = np.zeros((fft.shape[0], fft.shape[1]))
+        FFT[:,:] = abs(fft[:,:])
+        #print(np.amax(FFT))
+        scaling = np.average(FFT)
+        FFT = FFT * 0.4/ scaling
+        #FFT = FFT.astype(int)
+        print(FFT)
+        cv.imshow("Image", FFT)
+        cv.waitKey(0)
+        #Adding picture and information
+        fig.add_subplot(rows, columns, i+1)
+        #plt.annotate('Mean:' + str(stats.mean(data_arr[i]))[0:7], xy=(0.05, -0.4), xycoords='axes fraction')
+        #plt.annotate('Variance:' + str(stats.variance(data_arr[i]))[0:7], xy=(0.05, -0.6), xycoords='axes fraction')
+        plt.imshow(cv.cvtColor(img_arr[i], cv.COLOR_BGR2RGB))
+        #Canny image and measures
+        fig.add_subplot(rows, columns, i + 11)
+        plt.imshow(FFT, cmap="gray")
+        #plt.annotate('Canny count:' + str(count), xy=(0.05, -0.4), xycoords='axes fraction')
+    plt.show()
+
+
+
+
+def colour_img_canny_display_10(img_arr,data_arr):
+    #Figure Params
+    fig = plt.figure(figsize=(80, 80))
+    columns = 10
+    rows = 2
+
+    #FOr later plots
+    variances = np.zeros(10)
+    canny = np.zeros(10)
+
+    #Running for each of the measurements
+    for i in range(10):
+        #Compute canny
+        img_gray = cv.cvtColor(img_arr[i], cv.COLOR_RGB2GRAY)
+        img_canny = cv.Canny(img_gray,30,200)
+        #Adding picture and information
+        fig.add_subplot(rows, columns, i+1)
+        plt.annotate('Mean:' + str(stats.mean(data_arr[i]))[0:7], xy=(0.05, -0.4), xycoords='axes fraction')
+        plt.annotate('Variance:' + str(stats.variance(data_arr[i]))[0:7], xy=(0.05, -0.6), xycoords='axes fraction')
+        plt.imshow(cv.cvtColor(img_arr[i], cv.COLOR_BGR2RGB))
+        #Canny image and measures
+        fig.add_subplot(rows, columns, i + 11)
+        count = np.count_nonzero(img_canny == 255)
+        plt.imshow(img_canny)
+        plt.annotate('Canny count:' + str(count), xy=(0.05, -0.4), xycoords='axes fraction')
+        #update date for a future plot
+        variances[i] = stats.variance(data_arr[i])
+        canny[i] = count
+    plt.show()
+
+    ##Adjusting to same axis
+    n = variances[0]/canny[0]
+    for t in range(len(variances)):
+        canny[t] = canny[t] * n
+
+    plt.title("No. mixes vs canny/sensor measurement")
+    plt.plot(range(len(variances)), variances, color='r', marker='.', label="Conductance sensor")
+    plt.plot(range(len(canny)), canny, color='b', marker='.', label="canny count")
+    plt.xlabel("Number of Measurement")
+    plt.ylabel("Adjusted Conductance/Canny count")
+    plt.legend()
+    # plt.savefig("saltVsTime.png")
+    plt.show()
+    plt.clf()
+
+
+
 
 def read_attempt(experiment_name, attempt_no):
     #arrays for the data

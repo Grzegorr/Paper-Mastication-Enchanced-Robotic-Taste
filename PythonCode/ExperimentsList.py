@@ -1,4 +1,7 @@
 import time
+import numpy as np
+
+import CookingMoves.GenericRobotMoves as GenericMoves
 
 #Load in repository of mixing moves
 import CookingMoves.MixingMoves as MIX
@@ -12,6 +15,22 @@ import CookingMoves.CameraControl as CAM
 #Functions to save data
 import DataHandling.SavingExperimentData as DATA
 
+def map_it(robot, SALT):
+    salt_data = SALINITY_SAMPLING.mass_salinity_test_mapping(robot, SALT, radius=0.09, no_samples=400, if_retract_more="True", if_plate = "True")
+    img = CAM.returnPanPicture(robot)
+    DATA.nextEntrySave("Accurate_Tests", 4, img, salt_data, "6 eggs and 1.2g salt")
+
+
+def measure_and_print(robot, SALT):
+    for i in range(500):
+        next_reading = SALT.return_next_reading()
+        print(next_reading)
+        time.sleep(0.5)
+
+def measure_only(robot, SALT):
+    salt_data = SALINITY_SAMPLING.mass_salinity_test(robot, SALT, r=0.08, no_samples=100, if_retract_more="True")
+    img = CAM.returnPanPicture(robot)
+    DATA.nextEntrySave("Measure_Only", 0, img, salt_data, "Hope it works!")
 
 def test_mix_picture_measure(robot, SALT):
 
@@ -32,6 +51,24 @@ def first_actual_mixing(robot, SALT):
             salt_data = SALINITY_SAMPLING.mass_salinity_test(robot, SALT, r=0.08, no_samples=1)
             img = CAM.returnPanPicture(robot)
             DATA.nextEntrySave("First_Actual_Mixing", attempt, img, salt_data, "Two zigzag mixes between any next measurement")
+
+def picture_after_every_mix_measurement_at_end(robot, SALT):
+    n = 1  #no. of measurements
+    m = 1   #mixes between measurement
+    k = 1   #no. of attempts
+
+    for attempt in range(k):
+        for measurement in range(n):
+            for mix in range(m):
+                MIX.zigzag_stir_scramble_HOME(robot, 0.125, 0.12)
+                MIX.stir_circle_standard(robot)
+            salt_data = np.zeros(1)
+            img = CAM.returnPanPicture(robot)
+            DATA.nextEntrySave("MeasurementOnlyAtEnd", attempt, img, salt_data, "1 mix each, measurement only at the end")
+        salt_data = SALINITY_SAMPLING.mass_salinity_test(robot, SALT, r=0.08, no_samples=50)
+        img = CAM.returnPanPicture(robot)
+        DATA.nextEntrySave("MeasurementOnlyAtEnd", attempt, img, salt_data, "1 mix each, measurement only at the end")
+
 
 def first_egg_mixing(robot, SALT):
     n = 50  #no. of measurements

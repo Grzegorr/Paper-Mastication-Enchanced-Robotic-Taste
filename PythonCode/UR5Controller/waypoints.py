@@ -6,8 +6,30 @@ robot_home_l = [-0.19931, -0.448052, 0.452649, 0, 3.13094, -0.0228049]
 
 #For mixing and sampling
 mixing_home_l = [0.129577, -0.550784, 0.454364, 0.228642, 3.1262, -0.0216748]
-mixing_sensor_down_home_l = [0.128516, -0.548173, 0.619766, -0.0189174, 0.00346147, 0.996473]
-sensing_above_the_eggs = [0.130781, -0.555521, 0.205379, -0.0188212, 0.00362029, 0.99643]
+mixing_sensor_down_home_l = [0.128516, -0.548173, 0.619766, 0, 0, 0]
+sensing_above_the_eggs = [0.130781, -0.555521, 0.205379, 0, 0, 0]
+
+sensing_above_the_eggs_high = [0.130713, -0.555018, 0.236909, 0, 0, 0] # this is for the mode when the probe moves upwards more
+
+
+#Chewing
+chewing_home_l = [0.0487648, -0.394838, 0.439984, 0.228667, 3.12616, -0.0217348]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

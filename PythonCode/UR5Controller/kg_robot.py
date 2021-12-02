@@ -11,6 +11,7 @@ import UR5Controller.teach_mode as tm
 
 class kg_robot():
     def __init__(self, port=False, ee_port=False, db_host=False):
+        print("kg_robot_init")
         self.port = port
         self.ee_port = ee_port
         self.db_host = db_host
@@ -24,7 +25,7 @@ class kg_robot():
         #init ur5 connection
         self.open=False
         if port!=False:
-            self.host = "169.254.114.205"
+            self.host = "169.254.124.120"
 
             s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
