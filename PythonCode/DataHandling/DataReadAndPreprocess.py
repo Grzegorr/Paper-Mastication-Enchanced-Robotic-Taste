@@ -155,7 +155,7 @@ def read_attempt(experiment_name, attempt_no):
             break
         n =  n + 1
     n = n - 1 # to subtract the last terted measurement
-    print("There is "  + str(n) + " measurements in  this attempt.")
+    #print("There is "  + str(n) + " measurements in  this attempt.")
 
     #Loop over mesurements to read them in
     for d in range(n):

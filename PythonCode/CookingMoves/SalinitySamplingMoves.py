@@ -112,11 +112,11 @@ def mask_for_actually_measured_values(radius, no_samples, radius_ratio = 1.0):
     for n in range(no_samples):
         sq_side_in_samples = np.sqrt(no_samples)
         sample_grid_side = 2*radius/sq_side_in_samples
-        print("Sample grid Size: " + str(sample_grid_side))
+        #print("Sample grid Size: " + str(sample_grid_side))
         starting_point_x = - radius + sample_grid_side/2.0 # takes into account that sampling point should be in the middle of sampling square
-        print("Starting Point X: " + str(starting_point_x))
+        #print("Starting Point X: " + str(starting_point_x))
         starting_point_y = starting_point_x
-        print("Starting Point X: " + str(starting_point_y))
+        #print("Starting Point X: " + str(starting_point_y))
 
         # adjust x
         x = starting_point_x + (n % sq_side_in_samples) * sample_grid_side

@@ -15,7 +15,7 @@ entry_to_map = 19 #mixing test - not mixed
 entry_to_map = 0
 
 Salinity_array, Img_array = DATA.read_attempt(experiment_name = "ResistanceSpreadingMaps", attempt_no = 0)
-#Salinity_array, Img_array = DATA.read_attempt(experiment_name = "Maps", attempt_no = 1)
+Salinity_array, Img_array = DATA.read_attempt(experiment_name = "Maps", attempt_no = 1)
 Salinity_array, Img_array = DATA.read_attempt(experiment_name = "Accurate_Tests", attempt_no = 3)
 data = Salinity_array[entry_to_map]
 #data = [1,2,3,4,5,6,7,8,9]

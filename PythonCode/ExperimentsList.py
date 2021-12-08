@@ -18,7 +18,7 @@ import DataHandling.SavingExperimentData as DATA
 def map_it(robot, SALT):
     salt_data = SALINITY_SAMPLING.mass_salinity_test_mapping(robot, SALT, radius=0.09, no_samples=400, if_retract_more="True", if_plate = "True")
     img = CAM.returnPanPicture(robot)
-    DATA.nextEntrySave("Accurate_Tests", 4, img, salt_data, "6 eggs and 1.2g salt")
+    DATA.nextEntrySave("Accurate_Tests", 5, img, salt_data, "6 eggs and 1.2g salt")
 
 
 def measure_and_print(robot, SALT):
