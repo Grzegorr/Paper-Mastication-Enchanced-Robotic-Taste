@@ -17,7 +17,7 @@ import ExperimentsList as EXP
 
 #Connecting the arm
 print("------------Connection to the UR5-------------")
-robot = kgr.kg_robot(port=30010, db_host="169.254.124.121") #This is the arm's IP, change last number with respect to ethernet IP number
+robot = kgr.kg_robot(port=30010, db_host="169.254.114.206") #This is the arm's IP, change last number with respect to ethernet IP number
 print("----------------Arm Connected!-----------------\r\n")
 
 ##############################
@@ -43,8 +43,8 @@ SALT = salt_sensor(no_samples=400)
 #Experiment = "Measurement only at end"
 
 #Experiment = "Measurement Only"
-#Experiment = "Measure And Print NO arm movement"
-Experiment = "Mapping Test"
+Experiment = "Measure And Print NO arm movement"
+# = "Mapping Test"
 
 if Experiment == "Mapping Test":
     EXP.map_it(robot=robot, SALT=SALT)

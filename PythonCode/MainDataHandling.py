@@ -5,15 +5,26 @@ import numpy as np
 import DataHandling.DataReadAndPreprocess as DATA
 import CookingMoves.SalinitySamplingMoves as SALT
 
-if_print_water_added = "True"
 
-#Salinity_array, Img_array = DATA.read_attempt(experiment_name = "ResistanceSpreadingMaps", attempt_no = 1)
-Salinity_array, Img_array = DATA.read_attempt(experiment_name = "Maps", attempt_no = 1)
-Salinity_array, Img_array = DATA.read_attempt(experiment_name = "Accurate_Tests", attempt_no = 2)
+#######################################################
+#              CONTROL INPUTS                         #
+#######################################################
+if_print_water_added = "True"
+if_mask = "True"
+#These are numbered as in the repo
 first = 1
 second = 2
 third = 3
-if_mask = "True"
+
+
+#######################################################
+#          SINGLE ATTEMPT ANALYSIS                    #
+#######################################################
+#Salinity_array, Img_array = DATA.read_attempt(experiment_name = "ResistanceSpreadingMaps", attempt_no = 1)
+#Salinity_array, Img_array = DATA.read_attempt(experiment_name = "Maps", attempt_no = 1)
+Salinity_array, Img_array = DATA.read_attempt(experiment_name = "Accurate_Tests", attempt_no = 3)
+print(Salinity_array)
+
 
 
 ##ADJUSTMENT FOR PYTHON INDEXING ONLY
@@ -87,38 +98,46 @@ plt.show()
 
 
 
-
+#######################################################
+#                  HISTOGRAMS                         #
+#######################################################
+color = 'red'
 
 x = Salinity_array[first]
 y = Salinity_array[second]
 z = Salinity_array[third]
 
-bins = np.linspace(0, 10, 80)
-plt.hist(x, bins, label="unmixed")
-plt.ylim([0, 25])
-plt.xlabel("Conductance(mS/cm)")
-plt.ylabel("Frequency")
-plt.title("Histogram of conductance measurements")
-plt.legend(loc='upper right')
+figure2, (ax1, ax2, ax3) = plt.subplots(3, 1)
+
+bins = np.linspace(0, 15, 100)
+ax1.hist(x, bins, label="unmixed", color = color)
+ax1.set_ylim([0, 100])
+ax1.set_xlabel("Conductance(mS/cm)")
+ax1.set_ylabel("Frequency")
+ax1.set_title("Histogram of conductance measurements")
+ax1.legend(loc='upper right')
+#plt.show()
+
+bins = np.linspace(0, 15, 100)
+ax2.hist(y, bins, label="slightly mixed", color = color)
+ax2.set_ylim([0, 100])
+ax2.set_xlabel("Conductance(mS/cm)")
+ax2.set_ylabel("Frequency")
+ax2.set_title("Histogram of conductance measurements")
+ax2.legend(loc='upper right')
+#plt.show()
+
+bins = np.linspace(0, 15, 100)
+ax3.hist(z, bins, label="mixed", color = color)
+ax3.set_ylim([0, 100])
+ax3.set_xlabel("Conductance(mS/cm)")
+ax3.set_ylabel("Frequency")
+ax3.set_title("Histogram of conductance measurements")
+ax3.legend(loc='upper right')
+figure2.subplots_adjust(hspace=0.5)
+figure2.set_size_inches(5, 8)
 plt.show()
 
-bins = np.linspace(0, 10, 80)
-plt.hist(y, bins, label="slightly mixed")
-plt.ylim([0, 25])
-plt.xlabel("Conductance(mS/cm)")
-plt.ylabel("Frequency")
-plt.title("Histogram of conductance measurements")
-plt.legend(loc='upper right')
-plt.show()
-
-bins = np.linspace(0, 10, 80)
-plt.hist(z, bins, label="mixed")
-plt.ylim([0, 25])
-plt.xlabel("Conductance(mS/cm)")
-plt.ylabel("Frequency")
-plt.title("Histogram of conductance measurements")
-plt.legend(loc='upper right')
-plt.show()
 
 
 
@@ -130,11 +149,9 @@ plt.show()
 
 
 
-
-#####################################################################
-####################################################################
-# SPECIFIC PLOT HERE
-########################################################################
+##########################################################################
+#                     ALL DISHES THREE STATES                            #
+##########################################################################
 
 if True:
     Salinity_array, Img_array = DATA.read_attempt(experiment_name="Accurate_Tests", attempt_no=1)
@@ -327,6 +344,9 @@ if True:
     y7_1 = [median_unmixed, median_half_mixed, median_fully_mixed]
     y8 = [variance_unmixed, variance_half_mixed, variance_fully_mixed]
 
+
+
+
     #################################################
     Salinity_array, Img_array = DATA.read_attempt(experiment_name="Accurate_Tests", attempt_no=5)
     first = 1
@@ -377,6 +397,198 @@ if True:
 
 
 
+    #################################################
+    Salinity_array, Img_array = DATA.read_attempt(experiment_name="Accurate_Tests", attempt_no=6)
+    first = 1
+    second = 2
+    third = 3
+    if_mask = "True"
+
+    ##ADJUSTMENT FOR PYTHON INDEXING ONLY
+    first = first - 1
+    second = second - 1
+    third = third - 1
+
+    if if_mask == "True":
+        mask = SALT.mask_for_actually_measured_values(0.09, 400, radius_ratio=1)
+        for i in [first, second, third]:
+            dummy = []
+            for j in range(len(Salinity_array[i])):
+                if mask[j] == 1:
+                    dummy.append(Salinity_array[i][j])
+            Salinity_array[i] = dummy
+
+    mean_unmixed = statistics.mean(Salinity_array[first])
+    print(mean_unmixed)
+    variance_unmixed = statistics.variance(Salinity_array[first])
+    print(variance_unmixed)
+    median_unmixed = statistics.median(Salinity_array[first])
+    print(median_unmixed)
+
+    mean_half_mixed = statistics.mean(Salinity_array[second])
+    print(mean_half_mixed)
+    variance_half_mixed = statistics.variance(Salinity_array[second])
+    print(variance_half_mixed)
+    median_half_mixed = statistics.median(Salinity_array[second])
+    print(median_half_mixed)
+
+    mean_fully_mixed = statistics.mean(Salinity_array[third])
+    print(mean_fully_mixed)
+    variance_fully_mixed = statistics.variance(Salinity_array[third])
+    print(variance_fully_mixed)
+    median_fully_mixed = statistics.median(Salinity_array[third])
+    print(median_fully_mixed)
+
+    x = ["unmixed", "half-mixed", "fully-mixed"]
+    y11 = [mean_unmixed, mean_half_mixed, mean_fully_mixed]
+    y11_1 = [median_unmixed, median_half_mixed, median_fully_mixed]
+    y12 = [variance_unmixed, variance_half_mixed, variance_fully_mixed]
+
+    #################################################
+    Salinity_array, Img_array = DATA.read_attempt(experiment_name="Accurate_Tests", attempt_no=7)
+    first = 1
+    second = 2
+    third = 3
+    if_mask = "True"
+
+    ##ADJUSTMENT FOR PYTHON INDEXING ONLY
+    first = first - 1
+    second = second - 1
+    third = third - 1
+
+    if if_mask == "True":
+        mask = SALT.mask_for_actually_measured_values(0.09, 400, radius_ratio=1)
+        for i in [first, second, third]:
+            dummy = []
+            for j in range(len(Salinity_array[i])):
+                if mask[j] == 1:
+                    dummy.append(Salinity_array[i][j])
+            Salinity_array[i] = dummy
+
+    mean_unmixed = statistics.mean(Salinity_array[first])
+    print(mean_unmixed)
+    variance_unmixed = statistics.variance(Salinity_array[first])
+    print(variance_unmixed)
+    median_unmixed = statistics.median(Salinity_array[first])
+    print(median_unmixed)
+
+    mean_half_mixed = statistics.mean(Salinity_array[second])
+    print(mean_half_mixed)
+    variance_half_mixed = statistics.variance(Salinity_array[second])
+    print(variance_half_mixed)
+    median_half_mixed = statistics.median(Salinity_array[second])
+    print(median_half_mixed)
+
+    mean_fully_mixed = statistics.mean(Salinity_array[third])
+    print(mean_fully_mixed)
+    variance_fully_mixed = statistics.variance(Salinity_array[third])
+    print(variance_fully_mixed)
+    median_fully_mixed = statistics.median(Salinity_array[third])
+    print(median_fully_mixed)
+
+    x = ["unmixed", "half-mixed", "fully-mixed"]
+    y13 = [mean_unmixed, mean_half_mixed, mean_fully_mixed]
+    y13_1 = [median_unmixed, median_half_mixed, median_fully_mixed]
+    y14 = [variance_unmixed, variance_half_mixed, variance_fully_mixed]
+
+
+
+
+
+    #################################################
+    Salinity_array, Img_array = DATA.read_attempt(experiment_name="Accurate_Tests", attempt_no=8)
+    first = 1
+    second = 2
+    third = 3
+    if_mask = "True"
+
+    ##ADJUSTMENT FOR PYTHON INDEXING ONLY
+    first = first - 1
+    second = second - 1
+    third = third - 1
+
+    if if_mask == "True":
+        mask = SALT.mask_for_actually_measured_values(0.09, 400, radius_ratio=1)
+        for i in [first, second, third]:
+            dummy = []
+            for j in range(len(Salinity_array[i])):
+                if mask[j] == 1:
+                    dummy.append(Salinity_array[i][j])
+            Salinity_array[i] = dummy
+
+    mean_unmixed = statistics.mean(Salinity_array[first])
+    print(mean_unmixed)
+    variance_unmixed = statistics.variance(Salinity_array[first])
+    print(variance_unmixed)
+    median_unmixed = statistics.median(Salinity_array[first])
+    print(median_unmixed)
+
+    mean_half_mixed = statistics.mean(Salinity_array[second])
+    print(mean_half_mixed)
+    variance_half_mixed = statistics.variance(Salinity_array[second])
+    print(variance_half_mixed)
+    median_half_mixed = statistics.median(Salinity_array[second])
+    print(median_half_mixed)
+
+    mean_fully_mixed = statistics.mean(Salinity_array[third])
+    print(mean_fully_mixed)
+    variance_fully_mixed = statistics.variance(Salinity_array[third])
+    print(variance_fully_mixed)
+    median_fully_mixed = statistics.median(Salinity_array[third])
+    print(median_fully_mixed)
+
+    x = ["unmixed", "half-mixed", "fully-mixed"]
+    y15 = [mean_unmixed, mean_half_mixed, mean_fully_mixed]
+    y15_1 = [median_unmixed, median_half_mixed, median_fully_mixed]
+    y16 = [variance_unmixed, variance_half_mixed, variance_fully_mixed]
+
+    #################################################
+    Salinity_array, Img_array = DATA.read_attempt(experiment_name="Accurate_Tests", attempt_no=9)
+    first = 1
+    second = 2
+    third = 3
+    if_mask = "True"
+
+    ##ADJUSTMENT FOR PYTHON INDEXING ONLY
+    first = first - 1
+    second = second - 1
+    third = third - 1
+
+    if if_mask == "True":
+        mask = SALT.mask_for_actually_measured_values(0.09, 400, radius_ratio=1)
+        for i in [first, second, third]:
+            dummy = []
+            for j in range(len(Salinity_array[i])):
+                if mask[j] == 1:
+                    dummy.append(Salinity_array[i][j])
+            Salinity_array[i] = dummy
+
+    mean_unmixed = statistics.mean(Salinity_array[first])
+    print(mean_unmixed)
+    variance_unmixed = statistics.variance(Salinity_array[first])
+    print(variance_unmixed)
+    median_unmixed = statistics.median(Salinity_array[first])
+    print(median_unmixed)
+
+    mean_half_mixed = statistics.mean(Salinity_array[second])
+    print(mean_half_mixed)
+    variance_half_mixed = statistics.variance(Salinity_array[second])
+    print(variance_half_mixed)
+    median_half_mixed = statistics.median(Salinity_array[second])
+    print(median_half_mixed)
+
+    mean_fully_mixed = statistics.mean(Salinity_array[third])
+    print(mean_fully_mixed)
+    variance_fully_mixed = statistics.variance(Salinity_array[third])
+    print(variance_fully_mixed)
+    median_fully_mixed = statistics.median(Salinity_array[third])
+    print(median_fully_mixed)
+
+    x = ["unmixed", "half-mixed", "fully-mixed"]
+    y17 = [mean_unmixed, mean_half_mixed, mean_fully_mixed]
+    y17_1 = [median_unmixed, median_half_mixed, median_fully_mixed]
+    y18 = [variance_unmixed, variance_half_mixed, variance_fully_mixed]
+
 
 
 
@@ -402,69 +614,26 @@ if True:
     #ax.plot(x, y9_1, label="1.2g salt, 6 tomatoes - mean", color="yellow", marker="v", linestyle = "--")
     ax.plot(x, y10, label="1.2g salt, 6 tomatoes - variance", color="yellow", marker="o", linestyle = "dotted")
 
+    ax.plot(x, y11, label="2.4g salt, 3 tomatoes - mean", color="orange", marker="v")
+    # ax.plot(x, y11_1, label="2.4g salt, 3 tomatoes - mean", color="yellow", marker="v", linestyle = "--")
+    ax.plot(x, y12, label="2.4g salt, 3 tomatoes - variance", color="orange", marker="o", linestyle="dotted")
+
+    ax.plot(x, y13, label="2.4g salt - mean", color="orchid", marker="v")
+    # ax.plot(x, y13_1, label="2.4g salt - mean", color="orchid", marker="v", linestyle = "--")
+    ax.plot(x, y14, label="2.4g salt - variance", color="orchid", marker="o", linestyle="dotted")
+
+    ax.plot(x, y15, label="6 tomatoes - mean", color="cyan", marker="v")
+    # ax.plot(x, y15_1, label="2.4g salt - mean", color="syan", marker="v", linestyle = "--")
+    ax.plot(x, y16, label="6 tomatoes - variance", color="cyan", marker="o", linestyle="dotted")
+
+    ax.plot(x, y17, label="2.4g salt, 6 tomatoes - mean", color="navy", marker="v")
+    # ax.plot(x, y17_1, label="2.4g salt - mean", color="syan", marker="v", linestyle = "--")
+    ax.plot(x, y18, label="2.4g salt, 6 tomatoes - variance", color="navy", marker="o", linestyle="dotted")
+
     ax.set(xlabel='mixing state', ylabel='conductance (mS)', title='Effect of mixing on the conductance')
-    ax.legend()
+    ax.legend(bbox_to_anchor=(1, 1))
     ax.grid()
     fig.savefig("test.png")
     plt.show()
 
 
-
-if if_print_water_added == "True":
-    #################################################
-    Salinity_array, Img_array = DATA.read_attempt(experiment_name="Accurate_Tests", attempt_no=4)
-    first = 1
-    second = 2
-    third = 3
-    extra = 4
-    if_mask = "True"
-
-    ##ADJUSTMENT FOR PYTHON INDEXING ONLY
-    first = first - 1
-    second = second - 1
-    third = third - 1
-    extra = extra - 1
-
-    if if_mask == "True":
-        mask = SALT.mask_for_actually_measured_values(0.09, 400, radius_ratio=0.9)
-        for i in [first, second, third, extra]:
-            dummy = []
-            for j in range(len(Salinity_array[i])):
-                if mask[j] == 1:
-                    dummy.append(Salinity_array[i][j])
-            Salinity_array[i] = dummy
-
-    mean_unmixed = statistics.mean(Salinity_array[first])
-    print(mean_unmixed)
-    variance_unmixed = statistics.variance(Salinity_array[first])
-    print(variance_unmixed)
-
-    mean_half_mixed = statistics.mean(Salinity_array[second])
-    print(mean_half_mixed)
-    variance_half_mixed = statistics.variance(Salinity_array[second])
-    print(variance_half_mixed)
-
-    mean_fully_mixed = statistics.mean(Salinity_array[third])
-    print(mean_fully_mixed)
-    variance_fully_mixed = statistics.variance(Salinity_array[third])
-    print(variance_fully_mixed)
-
-    mean_added_water = statistics.mean(Salinity_array[extra])
-    print(mean_fully_mixed)
-    variance_added_water = statistics.variance(Salinity_array[extra])
-    print(variance_fully_mixed)
-
-    x = ["unmixed", "half-mixed", "fully-mixed","added water"]
-    y9 = [mean_unmixed, mean_half_mixed, mean_fully_mixed, mean_added_water]
-    y10 = [variance_unmixed, variance_half_mixed, variance_fully_mixed, variance_added_water]
-
-
-    fig, ax = plt.subplots()
-    ax.plot(x, y9, label="1.2g salt - mean", color="black", marker="v")
-    ax.plot(x, y10, label="1.2g salt - variance", color="black", marker="o")
-
-    ax.set(xlabel='mixing state', ylabel='conductance (mS)', title='Effect of mixing on the conductance')
-    ax.legend()
-    ax.grid()
-    fig.savefig("test.png")
-    plt.show()

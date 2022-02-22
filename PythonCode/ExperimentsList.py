@@ -18,14 +18,20 @@ import DataHandling.SavingExperimentData as DATA
 def map_it(robot, SALT):
     salt_data = SALINITY_SAMPLING.mass_salinity_test_mapping(robot, SALT, radius=0.09, no_samples=400, if_retract_more="True", if_plate = "True")
     img = CAM.returnPanPicture(robot)
-    DATA.nextEntrySave("Accurate_Tests", 5, img, salt_data, "6 eggs and 1.2g salt")
+    DATA.nextEntrySave("Misc", 1, img, salt_data, "Misc Test")
 
 
 def measure_and_print(robot, SALT):
-    for i in range(500):
+    for i in range(5000):
+        start_time = time.time()
+
+        time.sleep(0.5)
         next_reading = SALT.return_next_reading()
         print(next_reading)
-        time.sleep(0.5)
+
+        end_time = time.time()
+        time_elapsed = (end_time - start_time)
+        print("Time = " + str(time_elapsed))
 
 def measure_only(robot, SALT):
     salt_data = SALINITY_SAMPLING.mass_salinity_test(robot, SALT, r=0.08, no_samples=100, if_retract_more="True")
