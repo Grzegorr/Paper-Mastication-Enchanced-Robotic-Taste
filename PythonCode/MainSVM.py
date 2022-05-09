@@ -227,7 +227,7 @@ def two_class_svm(class1, class2):
     #plt.show()
 
 #mode is what classification u do
-def OneVsAllSVM(class_no, all_class_list = [1,2], mode = "pre_chewing", C = 1, tol = 1e-4, kernel = 'poly'):
+def OneVsAllSVM(class_no, all_class_list = [1,2], mode = "pre_chewing", C = 1, tol = 1e-4, kernel = 'poly', gamma = "scale"):
     ### Error messages:
     if class_no not in all_class_list:
         print("The class selected for classification is not in the list of class for loading, it is all_class_list variable.")
@@ -259,26 +259,26 @@ def OneVsAllSVM(class_no, all_class_list = [1,2], mode = "pre_chewing", C = 1, t
             y_test = np.concatenate((y_test, y1[last_train_index:]))
 
     if if_normalize == "True":
-        print("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
-        print("X_train samples shape:")
-        print(np.shape(X_train))
-        print("X samples:")
-        print(X_train)
+        #print("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
+        #print("X_train samples shape:")
+        #print(np.shape(X_train))
+        #print("X samples:")
+        #rint(X_train)
         #scaler = sklearn.preprocessing.StandardScaler() ##getting instance of a scaler
         scaler = sklearn.preprocessing.MaxAbsScaler()  ##getting instance of a scaler
         #scaler = sklearn.preprocessing.MinMaxScaler()  ##getting instance of a scaler
         scaler.fit(X_train)  ##gets min and max, will be applied to both train and test data
-        print("Scaler data min:")
+        #print("Scaler data min:")
         #print(scaler.data_min_)
-        print("Scaler data max:")
+        #print("Scaler data max:")
         #print(scaler.data_max_)
         #print(X)
         X_train = scaler.transform(X_train)
-        print("Rescaled X_train:")
-        print(X_train)
+        #print("Rescaled X_train:")
+        #print(X_train)
         X_test = scaler.transform(X_test)
-        print("Rescaled X_test:")
-        print(X_test)
+        #print("Rescaled X_test:")
+        #print(X_test)
 
 
 
@@ -298,7 +298,7 @@ def OneVsAllSVM(class_no, all_class_list = [1,2], mode = "pre_chewing", C = 1, t
             X_test_mode.append(entry)
         X_test_mode = np.asarray(X_test_mode)
 
-        clf = svm.SVC(kernel = kernel, tol = tol, C = C, class_weight='balanced') # class weight added here
+        clf = svm.SVC(kernel = kernel, tol = tol, C = C, class_weight='balanced', gamma = gamma) # class weight added here
         clf.fit(X_train_mode, y_train)  # fits the model, learning happens here
 
 
@@ -319,7 +319,7 @@ def OneVsAllSVM(class_no, all_class_list = [1,2], mode = "pre_chewing", C = 1, t
             X_test_mode.append(entry)
         X_test_mode = np.asarray(X_test_mode)
 
-        clf = svm.SVC(kernel = kernel, tol = tol, C = C, class_weight='balanced') # class weight added here
+        clf = svm.SVC(kernel = kernel, tol = tol, C = C, class_weight='balanced', gamma = gamma) # class weight added here
         clf.fit(X_train_mode, y_train)  # fits the model, learning happens here
 
         fig, ax = plt.subplots()
@@ -356,7 +356,7 @@ def OneVsAllSVM(class_no, all_class_list = [1,2], mode = "pre_chewing", C = 1, t
         X_test_mode = np.asarray(X_test_mode)
 
 
-        clf = svm.SVC(kernel = kernel, tol = tol, C = C, class_weight='balanced')  # class weight added here
+        clf = svm.SVC(kernel = kernel, tol = tol, C = C, class_weight='balanced', gamma = gamma)  # class weight added here
         clf.fit(X_train_mode, y_train)  # fits the model, learning happens here
 
         fig, ax = plt.subplots()
@@ -384,7 +384,7 @@ def OneVsAllSVM(class_no, all_class_list = [1,2], mode = "pre_chewing", C = 1, t
         X_test_mode = np.asarray(X_test_mode)
 
 
-        clf = svm.SVC(kernel = kernel, tol = tol, C = C, class_weight='balanced')  # class weight added here
+        clf = svm.SVC(kernel = kernel, tol = tol, C = C, class_weight='balanced', gamma = gamma)  # class weight added here
         clf.fit(X_train_mode, y_train)  # fits the model, learning happens here
 
     # Assesing the classifier
@@ -396,8 +396,9 @@ def OneVsAllSVM(class_no, all_class_list = [1,2], mode = "pre_chewing", C = 1, t
     recall = metrics.recall_score(y_test, predictions)
     print("Recall: " + str(recall))
     f1 = metrics.f1_score(y_test, predictions)
+    precision = metrics.precision_score(y_test, predictions)
     print("F1: " + str(f1))
-    return accuracy, recall, f1
+    return accuracy,precision, recall, f1
 
 
 
@@ -408,15 +409,15 @@ if __name__ == "__main__":
     for class_number in [1,2,3,4,5,6,7,8,9]:
         print("Next class:")
         print("__pre_chewing__:")
-        acc1, rec1, f11 = OneVsAllSVM(class_no=class_number, all_class_list=[1,2,3,4,5,6,7,8,9],mode="homogeneous")
+        acc1, prec1, rec1, f11 = OneVsAllSVM(class_no=class_number, all_class_list=[1,2,3,4,5,6,7,8,9],mode="homogeneous")
         print("__post_chewing__:")
-        acc2, rec2, f12 = OneVsAllSVM(class_no=class_number, all_class_list=[1,2,3,4,5,6,7,8,9], mode="post_chewing")
+        acc2, prec2, rec2, f12 = OneVsAllSVM(class_no=class_number, all_class_list=[1,2,3,4,5,6,7,8,9], mode="post_chewing")
         print("__pre_chewing__:")
-        acc3, rec3, f13 = OneVsAllSVM(class_no=class_number, all_class_list=[1,2,3,4,5,6,7,8,9], mode = "pre_chewing")
+        acc3, prec3, rec3, f13 = OneVsAllSVM(class_no=class_number, all_class_list=[1,2,3,4,5,6,7,8,9], mode = "pre_chewing")
         print("__full_info__:")
-        acc4, rec4, f14 = OneVsAllSVM(class_no=class_number, all_class_list=[1,2,3,4,5,6,7,8,9], mode="full_info")
+        acc4, prec4, rec4, f14 = OneVsAllSVM(class_no=class_number, all_class_list=[1,2,3,4,5,6,7,8,9], mode="full_info")
         print("\n")
-        result = [acc1, rec1, f11, acc2, rec2, f12, acc3, rec3, f13, acc4, rec4, f14]
+        result = [acc1, prec1, rec1, f11, acc2, prec2, rec2, f12, acc3, prec3, rec3, f13, acc4, prec4, rec4, f14]
         results.append(result)
     print(results)
 
@@ -426,10 +427,10 @@ if __name__ == "__main__":
     barWidth = 0.2
 
     # set heights of bars
-    bars1 = np.asarray(results)[:,2]
-    bars2 = np.asarray(results)[:,5]
-    bars3 = np.asarray(results)[:,8]
-    bars4 = np.asarray(results)[:,11]
+    bars1 = np.asarray(results)[:,3]
+    bars2 = np.asarray(results)[:,7]
+    bars3 = np.asarray(results)[:,11]
+    bars4 = np.asarray(results)[:,15]
 
     ######  Change no of attempt in database to dish numbering in the paper  #####
     bars_dummy = []
@@ -509,7 +510,8 @@ if __name__ == "__main__":
 
     # Create legend & Show graphic
     plt.legend(loc = 'lower left')
-    plt.show()
+    #plt.show()
+    plt.savefig("F1_1")
 
 
     #Average F1 scores printout:
@@ -529,6 +531,7 @@ if __name__ == "__main__":
 
     # set heights of bars
     bars = [averageF1_homo, averageF1_post, averageF1_pre, averageF1_all]
+    print("Data for final plot(F1):" + str(bars))
 
     # Set position of bar on X axis
     r1 = np.arange(len(bars))
@@ -545,9 +548,442 @@ if __name__ == "__main__":
 
     # Create legend & Show graphic
     #plt.legend()
-    plt.show()
+    #plt.show()
+    plt.savefig("F1_2")
 
 
 
 
+
+
+    #plt.close('all')
+    plt.figure()
+    # set width of bars
+
+    barWidth = 0.2
+
+    # set heights of bars
+    bars1 = np.asarray(results)[:,0]
+    bars2 = np.asarray(results)[:,4]
+    bars3 = np.asarray(results)[:,8]
+    bars4 = np.asarray(results)[:,12]
+
+    ######  Change no of attempt in database to dish numbering in the paper  #####
+    bars_dummy = []
+    bars_dummy.append(bars1[0])
+    bars_dummy.append(bars1[1])
+    bars_dummy.append(bars1[7])
+    bars_dummy.append(bars1[3])
+    bars_dummy.append(bars1[2])
+    bars_dummy.append(bars1[4])
+    bars_dummy.append(bars1[6])
+    bars_dummy.append(bars1[5])
+    bars_dummy.append(bars1[8])
+    bars1 = np.asarray(bars_dummy)
+    bars_dummy = []
+    bars_dummy.append(bars2[0])
+    bars_dummy.append(bars2[1])
+    bars_dummy.append(bars2[7])
+    bars_dummy.append(bars2[3])
+    bars_dummy.append(bars2[2])
+    bars_dummy.append(bars2[4])
+    bars_dummy.append(bars2[6])
+    bars_dummy.append(bars2[5])
+    bars_dummy.append(bars2[8])
+    bars2 = np.asarray(bars_dummy)
+    bars_dummy = []
+    bars_dummy.append(bars3[0])
+    bars_dummy.append(bars3[1])
+    bars_dummy.append(bars3[7])
+    bars_dummy.append(bars3[3])
+    bars_dummy.append(bars3[2])
+    bars_dummy.append(bars3[4])
+    bars_dummy.append(bars3[6])
+    bars_dummy.append(bars3[5])
+    bars_dummy.append(bars3[8])
+    bars3 = np.asarray(bars_dummy)
+    bars_dummy = []
+    bars_dummy.append(bars4[0])
+    bars_dummy.append(bars4[1])
+    bars_dummy.append(bars4[7])
+    bars_dummy.append(bars4[3])
+    bars_dummy.append(bars4[2])
+    bars_dummy.append(bars4[4])
+    bars_dummy.append(bars4[6])
+    bars_dummy.append(bars4[5])
+    bars_dummy.append(bars4[8])
+    bars4 = np.asarray(bars_dummy)
+
+
+
+    print("Bars 2:")
+    print(bars2)
+    print("Bars 3:")
+    print(bars3)
+
+    # Set position of bar on X axis
+    r1 = np.arange(len(bars1))
+    r2 = [x + barWidth for x in r1]
+    r3 = [x + barWidth for x in r2]
+    r4 = [x + barWidth for x in r3]
+
+    # Make the plot
+    #plt.bar(r1, bars1, color='olive', width=barWidth, edgecolor='white', label='Homogenized Sample')
+    #plt.bar(r2, bars2, color='#7f6d5f', width=barWidth, edgecolor='white', label='Chewed Sample')
+    #plt.bar(r3, bars3, color='#557f2d', width=barWidth, edgecolor='white', label='Un-Chewed Sample')
+    #plt.bar(r4, bars4, color='#2d7f5e', width=barWidth, edgecolor='white', label='Pre- and Post-\nChewing Data')
+    plt.bar(r1, bars1, color='olive', width=barWidth, edgecolor='white', label='Classification Method 1')
+    plt.bar(r2, bars2, color='#7f6d5f', width=barWidth, edgecolor='white', label='Classification Method 2')
+    plt.bar(r3, bars3, color='#557f2d', width=barWidth, edgecolor='white', label='Classification Method 3')
+    plt.bar(r4, bars4, color='#2d7f5e', width=barWidth, edgecolor='white', label='Classification Method 4')
+
+    # Add xticks on the middle of the group bars
+    #plt.xlabel('Dish Variety', fontweight='bold')
+    plt.ylabel('One vs All classification Accuracy Score', fontweight='bold')
+    #plt.xticks([r + 2 * barWidth for r in range(len(bars1))], ['No Salt\nNo Tomato', 'No Salt\nMedium Tomato', 'Medium Salt\nMedium Tomato', 'Medium Salt\nNo Tomato', 'Medium Salt\nHigh Tomato', 'High Salt\nMedium Tomato', 'High Salt\nNo Tomato', 'No Salt\nHigh Tomato', 'High Salt\nHigh Tomato'])
+    plt.xticks([r + 2 * barWidth for r in range(len(bars1))], ['Dish 1', 'Dish 2', 'Dish 3', 'Dish 4', 'Dish 5', 'Dish 6', 'Dish 7', 'Dish 8', 'Dish 9'])
+
+
+    # Create legend & Show graphic
+    plt.legend(loc = 'lower left')
+    #plt.show()
+    plt.savefig("Accuracy1")
+
+
+    #Average F1 scores printout:
+    print("Average Accuracy score for post-chewed mean-only data: " + str(statistics.mean(bars4)))
+    print("Average Accuracy score for post-chewed data: " + str(statistics.mean(bars1)))
+    print("Average Accuracy score for pre-chewed data: " + str(statistics.mean(bars2)))
+    print("Average Accuracy score for full data: " + str(statistics.mean(bars3)))
+
+    averageF1_homo = statistics.mean(bars1)
+    averageF1_post = statistics.mean(bars2)
+    averageF1_pre = statistics.mean(bars3)
+    averageF1_all = statistics.mean(bars4)
+
+    plt.figure()
+    # set width of bars
+    barWidth = 0.8
+
+    # set heights of bars
+    bars = [averageF1_homo, averageF1_post, averageF1_pre, averageF1_all]
+    print("Data for final plot(Acc):" + str(bars))
+
+    # Set position of bar on X axis
+    r1 = np.arange(len(bars))
+
+    # Make the plot
+    plt.bar([0,1,2,3], bars, color='navy', width=barWidth, edgecolor='white', label='F1 score - post-chewing mean')
+
+
+    # Add xticks on the middle of the group bars
+    plt.ylim(0.5,1)
+    plt.xlabel('Available Taste Information', fontweight='bold')
+    plt.ylabel('Average 9-class classification Accuracy Score', fontweight='bold')
+    plt.xticks(range(len(bars)), ['Homogenized\nSample', 'Post-Chewing', 'Pre-Chewing', 'Pre- and\nPost-Chewing'])
+
+    # Create legend & Show graphic
+    #plt.legend()
+    #plt.show()
+    plt.savefig("Accuracy2")
+
+
+
+
+
+    #plt.close('all')
+    plt.figure()
+    # set width of bars
+    barWidth = 0.2
+
+    # set heights of bars
+    bars1 = np.asarray(results)[:,1]
+    bars2 = np.asarray(results)[:,5]
+    bars3 = np.asarray(results)[:,9]
+    bars4 = np.asarray(results)[:,13]
+
+    ######  Change no of attempt in database to dish numbering in the paper  #####
+    bars_dummy = []
+    bars_dummy.append(bars1[0])
+    bars_dummy.append(bars1[1])
+    bars_dummy.append(bars1[7])
+    bars_dummy.append(bars1[3])
+    bars_dummy.append(bars1[2])
+    bars_dummy.append(bars1[4])
+    bars_dummy.append(bars1[6])
+    bars_dummy.append(bars1[5])
+    bars_dummy.append(bars1[8])
+    bars1 = np.asarray(bars_dummy)
+    bars_dummy = []
+    bars_dummy.append(bars2[0])
+    bars_dummy.append(bars2[1])
+    bars_dummy.append(bars2[7])
+    bars_dummy.append(bars2[3])
+    bars_dummy.append(bars2[2])
+    bars_dummy.append(bars2[4])
+    bars_dummy.append(bars2[6])
+    bars_dummy.append(bars2[5])
+    bars_dummy.append(bars2[8])
+    bars2 = np.asarray(bars_dummy)
+    bars_dummy = []
+    bars_dummy.append(bars3[0])
+    bars_dummy.append(bars3[1])
+    bars_dummy.append(bars3[7])
+    bars_dummy.append(bars3[3])
+    bars_dummy.append(bars3[2])
+    bars_dummy.append(bars3[4])
+    bars_dummy.append(bars3[6])
+    bars_dummy.append(bars3[5])
+    bars_dummy.append(bars3[8])
+    bars3 = np.asarray(bars_dummy)
+    bars_dummy = []
+    bars_dummy.append(bars4[0])
+    bars_dummy.append(bars4[1])
+    bars_dummy.append(bars4[7])
+    bars_dummy.append(bars4[3])
+    bars_dummy.append(bars4[2])
+    bars_dummy.append(bars4[4])
+    bars_dummy.append(bars4[6])
+    bars_dummy.append(bars4[5])
+    bars_dummy.append(bars4[8])
+    bars4 = np.asarray(bars_dummy)
+
+
+
+    print("Bars 2:")
+    print(bars2)
+    print("Bars 3:")
+    print(bars3)
+
+    # Set position of bar on X axis
+    r1 = np.arange(len(bars1))
+    r2 = [x + barWidth for x in r1]
+    r3 = [x + barWidth for x in r2]
+    r4 = [x + barWidth for x in r3]
+
+    # Make the plot
+    #plt.bar(r1, bars1, color='olive', width=barWidth, edgecolor='white', label='Homogenized Sample')
+    #plt.bar(r2, bars2, color='#7f6d5f', width=barWidth, edgecolor='white', label='Chewed Sample')
+    #plt.bar(r3, bars3, color='#557f2d', width=barWidth, edgecolor='white', label='Un-Chewed Sample')
+    #plt.bar(r4, bars4, color='#2d7f5e', width=barWidth, edgecolor='white', label='Pre- and Post-\nChewing Data')
+    plt.bar(r1, bars1, color='olive', width=barWidth, edgecolor='white', label='Classification Method 1')
+    plt.bar(r2, bars2, color='#7f6d5f', width=barWidth, edgecolor='white', label='Classification Method 2')
+    plt.bar(r3, bars3, color='#557f2d', width=barWidth, edgecolor='white', label='Classification Method 3')
+    plt.bar(r4, bars4, color='#2d7f5e', width=barWidth, edgecolor='white', label='Classification Method 4')
+
+    # Add xticks on the middle of the group bars
+    #plt.xlabel('Dish Variety', fontweight='bold')
+    plt.ylabel('One vs All classification Precision Score', fontweight='bold')
+    #plt.xticks([r + 2 * barWidth for r in range(len(bars1))], ['No Salt\nNo Tomato', 'No Salt\nMedium Tomato', 'Medium Salt\nMedium Tomato', 'Medium Salt\nNo Tomato', 'Medium Salt\nHigh Tomato', 'High Salt\nMedium Tomato', 'High Salt\nNo Tomato', 'No Salt\nHigh Tomato', 'High Salt\nHigh Tomato'])
+    plt.xticks([r + 2 * barWidth for r in range(len(bars1))], ['Dish 1', 'Dish 2', 'Dish 3', 'Dish 4', 'Dish 5', 'Dish 6', 'Dish 7', 'Dish 8', 'Dish 9'])
+
+
+    # Create legend & Show graphic
+    plt.legend(loc = 'lower left')
+    #plt.show()
+    plt.savefig("Precision1")
+
+
+    #Average F1 scores printout:
+    print("Average F1 score for post-chewed mean-only data: " + str(statistics.mean(bars4)))
+    print("Average F1 score for post-chewed data: " + str(statistics.mean(bars1)))
+    print("Average F1 score for pre-chewed data: " + str(statistics.mean(bars2)))
+    print("Average F1 score for full data: " + str(statistics.mean(bars3)))
+
+    averageF1_homo = statistics.mean(bars1)
+    averageF1_post = statistics.mean(bars2)
+    averageF1_pre = statistics.mean(bars3)
+    averageF1_all = statistics.mean(bars4)
+
+    plt.figure()
+    # set width of bars
+    barWidth = 0.8
+
+    # set heights of bars
+    bars = [averageF1_homo, averageF1_post, averageF1_pre, averageF1_all]
+    print("Data for final plot(Prec):" + str(bars))
+
+    # Set position of bar on X axis
+    r1 = np.arange(len(bars))
+
+    # Make the plot
+    plt.bar([0,1,2,3], bars, color='navy', width=barWidth, edgecolor='white', label='F1 score - post-chewing mean')
+
+
+    # Add xticks on the middle of the group bars
+    plt.ylim(0.3,1)
+    plt.xlabel('Available Taste Information', fontweight='bold')
+    plt.ylabel('Average 9-class classification Precision Score', fontweight='bold')
+    plt.xticks(range(len(bars)), ['Homogenized\nSample', 'Post-Chewing', 'Pre-Chewing', 'Pre- and\nPost-Chewing'])
+
+    # Create legend & Show graphic
+    #plt.legend()
+    #plt.show()
+    plt.savefig("Precision2")
+
+
+
+#plt.close('all')
+    plt.figure()
+    # set width of bars
+    barWidth = 0.2
+
+    # set heights of bars
+    bars1 = np.asarray(results)[:,2]
+    bars2 = np.asarray(results)[:,6]
+    bars3 = np.asarray(results)[:,10]
+    bars4 = np.asarray(results)[:,14]
+
+    ######  Change no of attempt in database to dish numbering in the paper  #####
+    bars_dummy = []
+    bars_dummy.append(bars1[0])
+    bars_dummy.append(bars1[1])
+    bars_dummy.append(bars1[7])
+    bars_dummy.append(bars1[3])
+    bars_dummy.append(bars1[2])
+    bars_dummy.append(bars1[4])
+    bars_dummy.append(bars1[6])
+    bars_dummy.append(bars1[5])
+    bars_dummy.append(bars1[8])
+    bars1 = np.asarray(bars_dummy)
+    bars_dummy = []
+    bars_dummy.append(bars2[0])
+    bars_dummy.append(bars2[1])
+    bars_dummy.append(bars2[7])
+    bars_dummy.append(bars2[3])
+    bars_dummy.append(bars2[2])
+    bars_dummy.append(bars2[4])
+    bars_dummy.append(bars2[6])
+    bars_dummy.append(bars2[5])
+    bars_dummy.append(bars2[8])
+    bars2 = np.asarray(bars_dummy)
+    bars_dummy = []
+    bars_dummy.append(bars3[0])
+    bars_dummy.append(bars3[1])
+    bars_dummy.append(bars3[7])
+    bars_dummy.append(bars3[3])
+    bars_dummy.append(bars3[2])
+    bars_dummy.append(bars3[4])
+    bars_dummy.append(bars3[6])
+    bars_dummy.append(bars3[5])
+    bars_dummy.append(bars3[8])
+    bars3 = np.asarray(bars_dummy)
+    bars_dummy = []
+    bars_dummy.append(bars4[0])
+    bars_dummy.append(bars4[1])
+    bars_dummy.append(bars4[7])
+    bars_dummy.append(bars4[3])
+    bars_dummy.append(bars4[2])
+    bars_dummy.append(bars4[4])
+    bars_dummy.append(bars4[6])
+    bars_dummy.append(bars4[5])
+    bars_dummy.append(bars4[8])
+    bars4 = np.asarray(bars_dummy)
+
+
+
+    print("Bars 2:")
+    print(bars2)
+    print("Bars 3:")
+    print(bars3)
+
+    # Set position of bar on X axis
+    r1 = np.arange(len(bars1))
+    r2 = [x + barWidth for x in r1]
+    r3 = [x + barWidth for x in r2]
+    r4 = [x + barWidth for x in r3]
+
+    # Make the plot
+    #plt.bar(r1, bars1, color='olive', width=barWidth, edgecolor='white', label='Homogenized Sample')
+    #plt.bar(r2, bars2, color='#7f6d5f', width=barWidth, edgecolor='white', label='Chewed Sample')
+    #plt.bar(r3, bars3, color='#557f2d', width=barWidth, edgecolor='white', label='Un-Chewed Sample')
+    #plt.bar(r4, bars4, color='#2d7f5e', width=barWidth, edgecolor='white', label='Pre- and Post-\nChewing Data')
+    plt.bar(r1, bars1, color='olive', width=barWidth, edgecolor='white', label='Classification Method 1')
+    plt.bar(r2, bars2, color='#7f6d5f', width=barWidth, edgecolor='white', label='Classification Method 2')
+    plt.bar(r3, bars3, color='#557f2d', width=barWidth, edgecolor='white', label='Classification Method 3')
+    plt.bar(r4, bars4, color='#2d7f5e', width=barWidth, edgecolor='white', label='Classification Method 4')
+
+    # Add xticks on the middle of the group bars
+    #plt.xlabel('Dish Variety', fontweight='bold')
+    plt.ylabel('One vs All classification Recall Score', fontweight='bold')
+    #plt.xticks([r + 2 * barWidth for r in range(len(bars1))], ['No Salt\nNo Tomato', 'No Salt\nMedium Tomato', 'Medium Salt\nMedium Tomato', 'Medium Salt\nNo Tomato', 'Medium Salt\nHigh Tomato', 'High Salt\nMedium Tomato', 'High Salt\nNo Tomato', 'No Salt\nHigh Tomato', 'High Salt\nHigh Tomato'])
+    plt.xticks([r + 2 * barWidth for r in range(len(bars1))], ['Dish 1', 'Dish 2', 'Dish 3', 'Dish 4', 'Dish 5', 'Dish 6', 'Dish 7', 'Dish 8', 'Dish 9'])
+
+
+    # Create legend & Show graphic
+    plt.legend(loc = 'lower left')
+    #plt.show()
+    plt.savefig("Recall1")
+
+
+    #Average F1 scores printout:
+    print("Average F1 score for post-chewed mean-only data: " + str(statistics.mean(bars4)))
+    print("Average F1 score for post-chewed data: " + str(statistics.mean(bars1)))
+    print("Average F1 score for pre-chewed data: " + str(statistics.mean(bars2)))
+    print("Average F1 score for full data: " + str(statistics.mean(bars3)))
+
+    averageF1_homo = statistics.mean(bars1)
+    averageF1_post = statistics.mean(bars2)
+    averageF1_pre = statistics.mean(bars3)
+    averageF1_all = statistics.mean(bars4)
+
+    plt.figure()
+    # set width of bars
+    barWidth = 0.8
+
+    # set heights of bars
+    bars = [averageF1_homo, averageF1_post, averageF1_pre, averageF1_all]
+    print("Data for final plot(Rec):" + str(bars))
+
+    # Set position of bar on X axis
+    r1 = np.arange(len(bars))
+
+    # Make the plot
+    plt.bar([0,1,2,3], bars, color='navy', width=barWidth, edgecolor='white', label='F1 score - post-chewing mean')
+
+
+    # Add xticks on the middle of the group bars
+    plt.ylim(0.5,1)
+    plt.xlabel('Available Taste Information', fontweight='bold')
+    plt.ylabel('Average 9-class classification Recall Score', fontweight='bold')
+    plt.xticks(range(len(bars)), ['Homogenized\nSample', 'Post-Chewing', 'Pre-Chewing', 'Pre- and\nPost-Chewing'])
+
+    # Create legend & Show graphic
+    #plt.legend()
+    #plt.show()
+    plt.savefig("Recall2")
+
+
+
+
+
+
+
+
+########################################################################################################################
+#############                                  C tuning                                                     ############
+########################################################################################################################
+print("XXXXXX\nC tuning:")
+
+prec = []
+rec = []
+for c in [0.1, 0.2, 0.5, 0.7, 1, 1.3, 1.5, 2, 3, 5, 7, 10, 12, 15, 20, 30, 40]:
+    acc1, prec1, rec1, f11 = OneVsAllSVM(class_no=4, all_class_list=[1,2,3,4,5,6,7,8,9],mode="homogeneous", C =c)
+    prec.append(prec1)
+    rec.append(rec1)
+
+print("Prec: " + str(prec))
+print("Recall: " + str(rec))
+
+
+
+prec = []
+rec = []
+for gammma in [0.1, 0.2, 0.5, 0.7, 1, 1.3, 1.5, 2, 3, 5, 7, 10, 12, 15, 20, 30, 40]:
+    acc1, prec1, rec1, f11 = OneVsAllSVM(class_no=4, all_class_list=[1,2,3,4,5,6,7,8,9],mode="homogeneous", gamma = gammma)
+    prec.append(prec1)
+    rec.append(rec1)
+
+print("Prec: " + str(prec))
+print("Recall: " + str(rec))
 

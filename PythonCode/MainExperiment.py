@@ -43,8 +43,8 @@ SALT = salt_sensor(no_samples=400)
 #Experiment = "Measurement only at end"
 
 #Experiment = "Measurement Only"
-Experiment = "Measure And Print NO arm movement"
-# = "Mapping Test"
+#Experiment = "Measure And Print NO arm movement"
+Experiment = "Mapping Test"
 
 if Experiment == "Mapping Test":
     EXP.map_it(robot=robot, SALT=SALT)

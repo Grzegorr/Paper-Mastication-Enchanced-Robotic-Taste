@@ -3,6 +3,9 @@ import random
 import math
 import numpy as np
 import time
+import matplotlib.pyplot as plt
+from pylab import *
+import copy
 
 #Load in repository of mixing moves
 import CookingMoves.GenericRobotMoves as GenericMoves
@@ -54,6 +57,7 @@ def mass_salinity_test(robot, SALT, r, no_samples, if_retract_more = "False", if
         point = [x, y]
         test_points.append(point)
 
+
     print("Test points: " + str(test_points))
 
     #Move to mixing home, which is high enough for safe spatula rotation
@@ -67,6 +71,8 @@ def mass_salinity_test(robot, SALT, r, no_samples, if_retract_more = "False", if
     else:
         robot.movel_tool([0, 0, -2*h2/3, 0, 0, 0], acc=0.1)
     print(robot.getl())
+
+
 
     #now sequence for every test point
     for test_point in test_points:
@@ -83,6 +89,7 @@ def mass_salinity_test(robot, SALT, r, no_samples, if_retract_more = "False", if
         time.sleep(2)
         #Take measurement
         SALT.getNextReading()
+
         #Take the sensor up from eggs
         if if_retract_more == "False":
             robot.movel_tool([0, 0, h3, 0, 0, 0], acc=0.1)
@@ -214,6 +221,23 @@ def mass_salinity_test_mapping(robot, SALT, radius, no_samples, if_retract_more 
     #now sequence for every test point
     counter = 0
     start = time.time()
+
+    display = [[0,1],[0,1]]
+
+    #######################################
+    ##################################
+
+#    plt.ion()
+#    plt.figure(figsize=(7, 6))
+#    plt.show()
+    #plt.pcolormesh(np.array(display))
+    #plt.colorbar()
+    ###############
+    ##############################
+
+
+
+
     for test_point in test_points:
         print("Points done: " + str(counter) + "/" + str(len(test_points)) + ".")
         end = time.time()
@@ -239,6 +263,67 @@ def mass_salinity_test_mapping(robot, SALT, radius, no_samples, if_retract_more 
             time.sleep(2)
             #Take measurement
             SALT.getNextReading()
+
+            ################################################################################################
+            ##########################   MAP SHOWIN PART HERE   ############################################
+            print("Drawing a map during the presentation")
+            data = copy.copy(SALT.returnData())
+
+            print("Data Before:")
+            print(data)
+            #set inf to 0:
+            for r in range(len(data)):
+                if data[r] == np.inf:
+                    data[r] = 0
+            print("Data After:")
+            print(data)
+
+            # data = [1,2,3,4,5,6,7,8,9]
+            data_len = len(data)
+            side = np.sqrt(data_len)
+
+            # array to display
+            display = np.zeros((side.astype(int), side.astype(int)))
+
+            # fill the display in
+            # display = np.array([[1,2],[3,4]]) # test display for no_samples = 4
+
+            for n in range(data_len):
+                x = n // side
+                y = n % side
+                display[int(x), int(y)] = data[n]
+
+            print("Display:")
+            print(display)
+
+            #fig, ax = plt.subplots()
+            #set_cmap('gray')
+            #im = ax.pcolor(display, vmin=0, vmax=10)
+            # ax.set_title("Egg map")
+            #plot = fig.colorbar(im, ax=ax)
+            #plot.set_label('Conductance[mS]', rotation=270)
+            #plt.ion()
+            #plt.show(block = "False")
+
+            #plt.figure(figsize=(7, 6))
+            #plt.pcolormesh(display)
+            #plt.colorbar()
+            #plt.draw()
+
+            plt.close(1)
+            plt.ion()
+            plt.figure(figsize=(7, 6))
+            plt.show()
+            plt.pcolormesh(np.array(display))
+            plt.colorbar()
+            plt.draw()
+            plt.pause(0.002)
+
+
+            ###################################################################################################
+
+
+
             #Take the sensor up from eggs
             if if_retract_more == "False":
                 robot.movel_tool([0, 0, h3, 0, 0, 0], acc=0.1)

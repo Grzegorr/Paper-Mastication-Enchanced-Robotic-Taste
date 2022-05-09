@@ -13,7 +13,7 @@ class UltimateProbe:
     def __init__(self):
         self.waitTime = 0.2 #How long to wait for the answer form arduino
         #self.no_samples = no_samples
-        self.ser = serial.Serial(port='COM5', baudrate=115200, bytesize=serial.EIGHTBITS, parity=serial.PARITY_NONE, stopbits=serial.STOPBITS_ONE, timeout=10)
+        self.ser = serial.Serial(port='COM3', baudrate=115200, bytesize=serial.EIGHTBITS, parity=serial.PARITY_NONE, stopbits=serial.STOPBITS_ONE, timeout=10)
         line = self.ser.read_until() #workaround
         print("-------------Ultimate Probe Successfully Connected-------------\r\n")
         #default values for temperature sensor if you dont calibrate it
@@ -131,6 +131,28 @@ class UltimateProbe:
         return scaling
 
 
+    def readConductanceADC(self):
+        self.ser.flushOutput()
+        self.ser.flushInput()
+        self.ser.write(str.encode("D"))
+        time.sleep(self.waitTime)
+        line = self.ser.read_until()
+        string = ""
+        for i in line:
+            j = chr(int(i))
+            string = string + j
+        #print("---" + string + "---")
+        #print(string[:-1])
+        value = int(string[:-1])
+        #print(value)
+        return value
+
+    def readResistance(self, Rref):
+        V_out = self.readConductanceADC() * 5.0 /1024.0
+        R = Rref * V_out/(5.0 - V_out)
+        print(R)
+        return R
+
 
 
 
@@ -143,8 +165,25 @@ class UltimateProbe:
 
 if __name__ == '__main__':
     PROBE = UltimateProbe()
+    start_time = time.time()
+    N=0
     while 1:
-        PROBE.readPH()
+        end_time = time.time()
+        time_elapsed = (end_time - start_time)
+        start_time = time.time()
+        print("Time = " + str(time_elapsed))
+        N = N + 1
+        print("Sample number: " + str(N))
+        time.sleep(0.3)
+        PROBE.readResistance(100000.0)
+
+
+
+
+
+
+
+
     #PROBE.calibrate_thermistor()
     #print(PROBE.B)
     #print(PROBE.Rinf)

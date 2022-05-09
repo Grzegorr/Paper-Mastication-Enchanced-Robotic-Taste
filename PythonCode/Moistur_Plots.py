@@ -205,7 +205,7 @@ plt.bar([0,1,2,3,4,5,6,7,8], bars, color='black', width=barWidth, edgecolor='whi
 # Add xticks on the middle of the group bars
 #plt.ylim(0.5,1)
 #plt.xlabel('Dish Variety', fontweight='bold', fontsize = 14)
-plt.ylabel('Conductance Variance\nBefore Mixing [mS/cm]', fontweight='bold', fontsize = 14)
+plt.ylabel('Conductance Variance\nBefore Mixing [$(mS/cm)^2$]', fontweight='bold', fontsize = 14)
 #plt.xticks(range(len(bars)), ['No additives','1.2g salt','2.4g salt','3 tomatoes','3 tomatoes\n1.2g salt','3 tomatoes\n2.4g salt','6 tomatoes\n1.2g salt','6 tomatoes','6 tomatoes\n2.4g salt'])
 plt.xticks(range(len(bars)), ['Dish 1','Dish 2','Dish 3','Dish 4','Dish 5','Dish 6','Dish 7','Dish 8','Dish 9'], fontsize = 14)
 
@@ -230,7 +230,7 @@ plt.bar([0,1,2,3,4,5,6,7,8], bars, color=color_array, width=barWidth, edgecolor=
 # Add xticks on the middle of the group bars
 #plt.ylim(0.5,1)
 plt.xlabel('Dish Variety', fontweight='bold', fontsize = 14)
-plt.ylabel('Conductance Variance\nAfter Mixing [mS/cm]', fontweight='bold', fontsize = 14)
+plt.ylabel('Conductance Variance\nAfter Mixing [$(mS/cm)^2$]', fontweight='bold', fontsize = 14)
 plt.xticks(range(len(bars)), ['Dish 1','Dish 2','Dish 3','Dish 4','Dish 5','Dish 6','Dish 7','Dish 8','Dish 9'], fontsize = 14)
 
 # Create legend & Show graphic
@@ -306,11 +306,11 @@ y9 = [mean_unmixed, mean_half_mixed, mean_fully_mixed, mean_added_water]
 y10 = [variance_unmixed, variance_half_mixed, variance_fully_mixed, variance_added_water]
 
 
-plt.plot(x, y9, label="Dish 4 - Mean", color="navy", marker="v")
-plt.plot(x, y10, label="Dish 4 - Variance", color="red", marker="o")
+plt.plot(x, y9, label="Mean [mS/cm]", color="navy", marker="v")
+plt.plot(x, y10, label="Variance [$(mS/cm)^2$]", color="red", marker="o")
 
 plt.xlabel('Mixing State', fontweight='bold', fontsize = 12)
-plt.ylabel('Conductance [mS/cm]', fontweight='bold', fontsize = 12)
+plt.ylabel('Dish 4 - Conductance', fontweight='bold', fontsize = 12)
 #ax.set(xlabel='mixing state', ylabel='conductance (mS)', title='Effect of mixing on the conductance', fontsize = 14)
 plt.legend()
 plt.grid()

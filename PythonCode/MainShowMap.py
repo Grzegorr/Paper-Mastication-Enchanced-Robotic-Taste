@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
 from pylab import *
+import copy
 
 import DataHandling.DataReadAndPreprocess as DATA
 import CookingMoves.SalinitySamplingMoves as SALT
@@ -49,7 +50,7 @@ def initial_tests():
 def show_map(experiment_name, attempt_no, entry_number):
     Salinity_array, Img_array = DATA.read_attempt(experiment_name=experiment_name, attempt_no=attempt_no)
     data = Salinity_array[entry_number]
-    # data = [1,2,3,4,5,6,7,8,9]
+    #data = [1,2,3,4,5,6,7,8,9]
     data_len = len(data)
     side = np.sqrt(data_len)
 
