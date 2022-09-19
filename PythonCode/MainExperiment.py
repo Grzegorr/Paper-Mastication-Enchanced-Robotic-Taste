@@ -17,7 +17,7 @@ import ExperimentsList as EXP
 
 #Connecting the arm
 print("------------Connection to the UR5-------------")
-robot = kgr.kg_robot(port=30010, db_host="169.254.114.206") #This is the arm's IP, change last number with respect to ethernet IP number
+robot = kgr.kg_robot(port=30010, db_host="169.254.124.125") #This is the arm's IP, change last number with respect to ethernet IP number
 print("----------------Arm Connected!-----------------\r\n")
 
 ##############################

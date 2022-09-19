@@ -309,10 +309,12 @@ def mass_salinity_test_mapping(robot, SALT, radius, no_samples, if_retract_more 
             #plt.pcolormesh(display)
             #plt.colorbar()
             #plt.draw()
+            #This is how I write, lol:D For loo:# for all the start in the universe add +1 :D
+
 
             plt.close(1)
             plt.ion()
-            plt.figure(figsize=(7, 6))
+            plt.figure(figsize=(10, 8))
             plt.show()
             plt.pcolormesh(np.array(display))
             plt.colorbar()
